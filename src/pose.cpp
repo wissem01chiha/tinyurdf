@@ -54,12 +54,12 @@ namespace urdf {
           if (xyz_str) 
           {
             std::istringstream stream(xyz_str);
-            str2vec(stream, position);
+            str2vec<T>(stream, position);
           }
           if (rpy_str) 
           {
             std::istringstream stream(rpy_str);
-            str2rot(stream, rotation);
+            str2rot<T>(stream, rotation);
           }
         }
     }

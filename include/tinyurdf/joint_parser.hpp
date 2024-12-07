@@ -8,6 +8,7 @@
 #include <tinyxml2/tinyxml2.h>
 #include <loguru/loguru.hpp>
 #include "urdf_utilities.h"
+#include "urdf_parser_util.h"
 #include "pose.hpp"
 #include "joint.hpp"
 
@@ -36,11 +37,11 @@ namespace tinyurdf {
     bool export2xml(tinyxml2::XMLElement* xml);
 
   private:
-    bool parseJointDynamics(tinyxml2::XMLElement* xml);
-    bool parseJointLimits(tinyxml2::XMLElement* xml);
-    bool parseJointSafety(tinyxml2::XMLElement* xml);
-    bool parseJointCalibration(tinyxml2::XMLElement* xml);
-    bool parseJointMimic(tinyxml2::XMLElement* xml);
+    static bool parseJointDynamics(tinyxml2::XMLElement* xml, urdf::JointDynamics<T>*jd);
+    static bool parseJointLimits(tinyxml2::XMLElement* xml, urdf::JointLimits<T>*jl);
+    static bool parseJointSafety(tinyxml2::XMLElement* xml, urdf::JointSafety<T>*js);
+    static bool parseJointCalibration(tinyxml2::XMLElement* xml, urdf::JointCalibration<T>*jc);
+    static bool parseJointMimic(tinyxml2::XMLElement* xml, urdf::JointMimic<T>*jm);
 
     bool exportPose(urdf::Pose<T> &pose);
     bool exportJointDynamics(tinyxml2::XMLElement* xml);
@@ -49,14 +50,8 @@ namespace tinyurdf {
     bool exportJointCalibration(tinyxml2::XMLElement* xml);
     bool exportJointMimic(tinyxml2::XMLElement* xml);
 
-    tinyxml2::XMLElement*          config;
-    urdf::JointDynamics<T>*        jd;
-    urdf::JointLimits<T>*          jl;
-    urdf::JointSafety<T>*          js;
-    urdf::JointCalibration<T>*     jc;
-    urdf::JointMimic<T>*           jm;
-
-    std::unique_ptr<urdf::Joint<T>>jt;
+    tinyxml2::XMLElement*           config;
+    std::unique_ptr<urdf::Joint<T>> joint;
   };
 }; // namespace tinyurdf
 #endif // JOINT_PARSER_HPP

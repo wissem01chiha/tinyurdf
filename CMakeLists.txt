@@ -28,7 +28,6 @@ set(TINYURDF_LIBRARY_SOURCES
     src/link.cpp
     src/joint.cpp
     src/joint_parser.cpp
-    #src/joint.cpp
     #src/world.cpp
     #src/sensor.cpp
     #src/check_urdf.cpp

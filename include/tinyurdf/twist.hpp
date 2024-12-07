@@ -29,7 +29,6 @@ namespace urdf {
         math::Vec3<T>  angular;
 
         void clear();
-
     };
 
 }; 

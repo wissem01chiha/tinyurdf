@@ -28,19 +28,19 @@ namespace urdf {
     bool Model(const std::string& xmlstring);
 
     /// \brief return a shared pointer to the root link 
-    std::shared_ptr<const Link<T>> getRoot(void) const{return this->root_link_;};
+    std::shared_ptr<const Link<T>>  getRoot(void) const{return this->root_link_;};
 
     /// \brief  return a shared pointer to a given link by name 
-    std::shared_ptr<const Link<T>> getLink(const std::string& name) const;
+    std::shared_ptr<const Link<T>>  getLink(const std::string& name) const;
 
-    /// \brief 
+    /// \brief return a shared pointer to a given Joint by name 
     std::shared_ptr<const Joint> getJoint(const std::string& name) const;
 
-    /// \brief get the robot model name 
+    /// \brief get the multibody model name 
     const std::string& getName() const {return name_;};
 
-    /// \brief 
-    void getLinks(std::vector<std::shared_ptr<Link> >& links) const;
+    /// \brief return a vector of pointers to model links
+    void getLinks(std::vector<std::shared_ptr<Link>>& links) const;
 
     /// \brief get parent Link of a Link given name
     std::shared_ptr<const Link> getParentLink(const std::string& name) const;
@@ -92,7 +92,5 @@ namespace urdf {
     std::shared_ptr<Link> root_link_;
 
   };
-
-}
-
+}; // namespace urdf 
 #endif // MODEL_HPP

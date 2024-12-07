@@ -82,9 +82,9 @@ void str2rot(std::istringstream& stream, math::Rot3<T>& q){
 template<typename T>
 void vec2str(const math::Vec3<T>& vec, std::string& str_){
 
-    std::ostringstream stream;
-    stream << vec(0) << " " << vec(1) << " " << vec(2);
-    str_ = stream.str();
+  std::ostringstream stream;
+  stream << vec(0) << " " << vec(1) << " " << vec(2);
+  str_ = stream.str();
 };
 
 /**
@@ -107,21 +107,21 @@ void rot2str(const math::Rot3<T>& q, std::string& str_){
 template<typename T>
 void str2num(const char *in, T& num_)
 {
-    try {
-        if (std::is_same_v<T, double>) {
-            num_ = std::stod(in);  
-        }
-        else if (std::is_same_v<T, float>) {
-            num_ = std::stof(in);  
-        }
-        else if (std::is_same_v<T, long double>) {
-            num_ = std::stold(in);  
-        } else {
-            LOG_F(ERROR,"unsupported type for conversion.");
-        }
+  try {
+      if (std::is_same_v<T, double>) {
+          num_ = std::stod(in);  
+      }
+      else if (std::is_same_v<T, float>) {
+          num_ = std::stof(in);  
+      }
+      else if (std::is_same_v<T, long double>) {
+          num_ = std::stold(in);  
+      } else {
+          LOG_F(ERROR,"unsupported type for conversion.");
+      }
     } catch (const std::exception& e) {
-        LOG_F(ERROR, "failed converting string to %s: %s", typeid(T).name(), e.what());
-    }
+      LOG_F(ERROR, "failed converting string to %s: %s", typeid(T).name(), e.what());
+  }
 };
 
 #endif // URDF_UTILITIES_H

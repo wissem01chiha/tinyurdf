@@ -1,3 +1,8 @@
+
+
+#include "link.hpp"
+#include "urdf_parser_util.h"
+#include "urdf_utilities.h"
 /**
  * <link name="my_link">
    2    <inertial>

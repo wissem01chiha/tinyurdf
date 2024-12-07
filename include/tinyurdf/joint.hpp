@@ -148,8 +148,14 @@ namespace urdf {
     /// Link to Joint Frame.
     std::vector<std::string> parent_links_name;
 
-    /// \brief  transform from Parent Links frames to Joint frame
-    std::vector<Pose<T>>     parents_to_joint_origin_transform;
+    /// \brief transform from Parent Links frames to Joint frame
+    /// \note  for "graph-similar" models a joint can have multiple parents
+    /// it decalares the <orgin> tag for each parent  
+    /// \example if one tag : <origin xyz="0 1 0" rpy="0 0 0"/>
+    /// it should have one parent (to expect) and assume this is the parent
+    /// for multiple <origin xyz="0 1 0" rpy="0 0 0" parent = "parent_joint_name_1"/>
+    ///              <origin xyz="0 1 0" rpy="0 0 0" parent = "parent_joint_name_2"/>
+    std::vector<Pose<T>>                parents_to_joint_origin_transform;
 
     std::shared_ptr<JointDynamics<T>>    dynamics;
     std::shared_ptr<JointLimits<T>>      limits;

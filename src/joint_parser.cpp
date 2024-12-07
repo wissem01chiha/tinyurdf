@@ -25,7 +25,7 @@ namespace tinyurdf{
   }
 
   template <typename T>
-  bool JointParser<T>::parseJointDynamics(tinyxml2::XMLElement* xml)
+  bool JointParser<T>::parseJointDynamics(tinyxml2::XMLElement* xml, urdf::JointDynamics<T>*jd)
   {
     jd->clear();
     const char* damping_str = xml->Attribute("damping");
@@ -65,7 +65,7 @@ namespace tinyurdf{
   };
 
   template <typename T>
-  bool JointParser<T>::parseJointLimits(tinyxml2::XMLElement* xml)
+  bool JointParser<T>::parseJointLimits(tinyxml2::XMLElement* xml, urdf::JointLimits<T>*jl)
   {
     jl.clear();
     const char* lower_str = xml->Attribute("lower");
@@ -76,7 +76,7 @@ namespace tinyurdf{
     else
     {
       try {
-        str2num<T>(lower_str, jd->lower);
+        str2num<T>(lower_str, jl->lower);
       } catch (std::runtime_error &) {
          LOG_F(ERROR, "lower value (%s) is not a valid float", lower_str);
         return false;
@@ -90,7 +90,7 @@ namespace tinyurdf{
     else
     {
       try {
-        str2num<T>(upper_str, jd->upper);
+        str2num<T>(upper_str, jl->upper);
       } catch(std::runtime_error &) {
          LOG_F(ERROR, "upper value (%s) is not a valid float", upper_str);
         return false;
@@ -104,7 +104,7 @@ namespace tinyurdf{
     else
     {
       try {
-        str2num<T>(effort_str, jd->effort);
+        str2num<T>(effort_str, jl->effort);
       } catch(std::runtime_error &) {
          LOG_F(ERROR, "effort value (%s) is not a valid float", effort_str);
         return false;
@@ -119,7 +119,7 @@ namespace tinyurdf{
     else
     {
       try {
-        str2num<T>(velocity_str, jd->velocity);
+        str2num<T>(velocity_str, jl->velocity);
       } catch(std::runtime_error &) {
          LOG_F(ERROR,"velocity value (%s) is not a valid float", velocity_str);
         return false;
@@ -129,7 +129,7 @@ namespace tinyurdf{
   };
 
   template <typename T>
-  bool JointParser<T>::parseJointSafety(tinyxml2::XMLElement* xml)
+  bool JointParser<T>::parseJointSafety(tinyxml2::XMLElement* xml, urdf::JointSafety<T>*js)
   {
     js.clear();
     const char* soft_lower_limit_str = xml->Attribute("soft_lower_limit");
@@ -141,7 +141,7 @@ namespace tinyurdf{
     else
     {
       try {
-        str2num<T>(soft_lower_limit_str, jd->soft_lower_limit);
+        str2num<T>(soft_lower_limit_str, js->soft_lower_limit);
       } catch(std::runtime_error &) {
          LOG_F(ERROR, "soft_lower_limit value (%s) is not a valid float", soft_lower_limit_str);
         return false;
@@ -156,7 +156,7 @@ namespace tinyurdf{
     else
     {
       try {
-        str2num<T>(soft_upper_limit_str, jd->soft_upper_limit);
+        str2num<T>(soft_upper_limit_str, js->soft_upper_limit);
       } catch(std::runtime_error &) {
          LOG_F(ERROR, "soft_upper_limit value (%s) is not a valid float", soft_upper_limit_str);
         return false;
@@ -171,7 +171,7 @@ namespace tinyurdf{
     else
     {
       try {
-        str2num<T>(k_position_str, jd->k_position);
+        str2num<T>(k_position_str, js->k_position);
       } catch(std::runtime_error &) {
          LOG_F(ERROR, "k_position value (%s) is not a valid float", k_position_str);
         return false;
@@ -186,7 +186,7 @@ namespace tinyurdf{
     else
     {
       try {
-        str2num<T>(k_velocity_str, jd->k_velocity);
+        str2num<T>(k_velocity_str, js->k_velocity);
       } catch(std::runtime_error &) {
          LOG_F(ERROR, "k_velocity value (%s) is not a valid float", k_velocity_str);
         return false;
@@ -196,7 +196,7 @@ namespace tinyurdf{
   };
 
   template <typename T>
-  bool JointParser<T>::parseJointCalibration(tinyxml2::XMLElement* xml)
+  bool JointParser<T>::parseJointCalibration(tinyxml2::XMLElement* xml, urdf::JointCalibration<T>*jc)
   {
     jc->clear();
     const char* rising_position_str = xml->Attribute("rising");
@@ -237,7 +237,7 @@ namespace tinyurdf{
   };
 
   template <typename T>
-  bool JointParser<T>::parseJointMimic(tinyxml2::XMLElement* xml)
+  bool JointParser<T>::parseJointMimic(tinyxml2::XMLElement* xml, urdf::JointMimic<T>*jm)
   {
     jm->clear();
     const char* joint_name_str = xml->Attribute("joint");
@@ -292,31 +292,35 @@ namespace tinyurdf{
       LOG_F(ERROR, "unnamed joint found");
       return false;
     }
-    joint->name = name;
+    joint->name = std::string(name);
     tinyxml2::XMLElement *origin_xml = config->FirstChildElement("origin");
     if (!origin_xml)
     {
       LOG_F(WARNING,
-      "JointParser [%s] missing origin tag under parent describing transform from Parent Link to JointParser Frame, (using Identity transform).", joint.name.c_str());
-      joint.parent_to_joint_origin_transform.clear();
+      "Joint [%s] missing origin tag under parent describing transform from Parent Link to Joint Frame", joint.name.c_str());
+      joint.parents_to_joint_origin_transform.clear();
     }
     else
     {
-      if (!parsePoseInternal(joint.parent_to_joint_origin_transform, origin_xml))
+      if (!parsePoseInternal<T>(joint.parents_to_joint_origin_transform, origin_xml))
       {
-        joint.parent_to_joint_origin_transform.clear();
-         LOG_F(ERROR, "Malformed parent origin element for joint [%s]", joint.name.c_str());
+        joint.parents_to_joint_origin_transform.clear();
+        LOG_F(ERROR, "Malformed parent origin element for joint [%s]", joint.name.c_str());
         return false;
       }
     }
+  }
+    /*  a single joint 
+    // the joint parent elment declred as 
+    /// <parent  link = "parnt_link_name" >
     tinyxml2::XMLElement *parent_xml = config->FirstChildElement("parent");
     if (parent_xml)
     {
       const char *pname = parent_xml->Attribute("link");
       if (!pname)
       {
-        LOG_F(WARNING, "no parent link name specified for JointParser link [%s]. this might be the root?",
-         joint.name.c_str());
+        LOG_F(WARNING, "no parent link name specified for joint link [%s].this might be the root?",
+        joint.name.c_str());
       }
       else
       {
@@ -329,7 +333,7 @@ namespace tinyurdf{
       const char *pname = child_xml->Attribute("link");
       if (!pname)
       {
-        CONSOLE_BRIDGE_logInform("no child link name specified for JointParser link [%s].", joint.name.c_str());
+        LOG_F(WARNING, "no child link name specified for Joint link [%s].", joint.name.c_str());
       }
       else
       {
@@ -448,7 +452,7 @@ namespace tinyurdf{
     }
     return true;
   };
-/**
+
   template <typename T>
   bool JointParser<T>::exportPose(urdf::Pose<T> &pose)
   {
