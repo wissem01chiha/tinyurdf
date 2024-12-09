@@ -9,18 +9,14 @@ TinyURDF do not depend on ROS. However the core of this project was inspired and
 Features
 --------
 
-- **Multibody Representation**: allows the representation of complex serial and parallel mechanisms with multibody systems, as well as multiaxial joints.
-
-- **Multibody Graph-Based Structures**: supports complex multibody graph-based structures, where each joint can have multiple parent links and each link can have only one child or parent link. This enables the representation of parallel-composed models in robotics and biomechanics.
-
-- **Data Export**: facilitates exporting this representation to common human-readable data formats, such as JSON and YAML.
-
-- **Platform-Neutral Serialization**: uses [Protocol Buffers](https://protobuf.dev/), for serializing structured data, to achive efficient and compact data storage.
-
-- **Ease of Integration**: designed to be cross-compiled, making it easy to integrate and install across various platforms.
+- multibody representation : allows the representation of complex serial and parallel mechanisms with multibody systems, as well as multiaxial joints.
+- multibody graph-based structures : supports complex multibody graph-based structures, where each joint can have multiple parent links and each link can have only one child or parent link. This enables the representation of parallel-composed models in robotics and biomechanics.
+- data export: facilitates exporting this representation to common human-readable data formats, such as JSON and YAML.
+- platform-neutral serialization: uses [Protocol Buffers](https://protobuf.dev/), for serializing structured data, to achive efficient and compact data storage.
+- ease of integration : designed to be cross-compiled, making it easy to integrate and install across various platforms.
 
 ### Dependencies
---------
+------------
 
 The library currently depends on the following C++ projects:
 
@@ -32,7 +28,7 @@ The library currently depends on the following C++ projects:
   - **[googletest](https://github.com/google/googletest)** (optional)
 
 ### Build  
---------
+------------
 
 ```bash
 git clone https://github.com/wissem01chiha/tinyurdf
@@ -72,8 +68,7 @@ Feel free to [mail](mailto:chihawissem08@gmail.com) me.
   
 Examples  
 ------------  
-Examples of scripts are implemented in the [examples](/examples/) folder.  
-Examples of URDF/SRDF files can be found at [awesome-urdf](https://github.com/ami-iit/awesome-urdf).
+Examples of scripts are implemented in the [examples](/examples/) folder, samples of .urdf files can be found at [awesome-urdf](https://github.com/ami-iit/awesome-urdf).
 
 
 Contributors
