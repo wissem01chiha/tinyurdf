@@ -15,8 +15,8 @@ Features
 - platform-neutral serialization: uses [Protocol Buffers](https://protobuf.dev/), for serializing structured data, to achive efficient and compact data storage.
 - ease of integration : designed to be cross-compiled, making it easy to integrate and install across various platforms.
 
-### Dependencies
-------------
+Dependencies
+--------
 
 The library currently depends on the following C++ projects:
 
@@ -27,7 +27,7 @@ The library currently depends on the following C++ projects:
   - **[nlohmann-json](https://github.com/nlohmann/json)**
   - **[googletest](https://github.com/google/googletest)** (optional)
 
-### Build  
+Build  
 ------------
 
 ```bash
