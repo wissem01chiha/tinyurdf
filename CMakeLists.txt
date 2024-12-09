@@ -15,6 +15,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clan
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
 endif()
+cmake_policy(SET CMP0135 NEW)
+set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 include(External-Eigen)
@@ -23,11 +25,11 @@ add_subdirectory(extern/loguru)
 add_subdirectory(extern/tinyxml2)
 
 set(TINYURDF_LIBRARY_SOURCES
-    src/color.cpp
-    src/pose.cpp
-    src/link.cpp
-    src/joint.cpp
-    src/joint_parser.cpp
+    src/color.cc
+    src/pose.cc
+    src/link.cc
+    src/joint.cc
+    src/joint_parser.cc
     #src/world.cpp
     #src/sensor.cpp
     #src/check_urdf.cpp
@@ -50,8 +52,9 @@ if (BUILD_TESTS)
     enable_testing()
 
     set(TINYURDF_TEST_SOURCES
-        test/color_test.cxx
-        test/urdf_utilities_test.cxx
+        test/color_test.cc
+        test/pose_test.cc
+        test/urdf_utilities_test.cc
     )
 
     foreach(TEST_SOURCE_FILE IN LISTS TINYURDF_TEST_SOURCES)

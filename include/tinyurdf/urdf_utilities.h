@@ -49,31 +49,28 @@ void str2vec(std::istringstream& stream, math::Vec3<T>& v){
  * object.
  */
 template <typename T>
-void str2rot(std::istringstream& stream, math::Rot3<T>& q){
+void str2rot(std::istringstream& stream, math::Rot3<T>& q) {
 
-  T val;
-  std::vector<T> values;
-
-  while (stream >> val) {
-      values.push_back(val);
-  }
-  if (values.size() != 4 || values.size() != 3)
-  {
-    LOG_F(ERROR, "rotation values contains %i elements instead of 3 or 4 elements",
-                (int)values.size());
-    return;
-  }
-  
-  if (values.size() == 4) {
-    q = Eigen::Quaternion<T>(values[3], values[0], values[1], values[2]);
-  }
-  if(values.size() == 3){
-    q = Eigen::Quaternion<T>(
-        Eigen::AngleAxis<T>(values[2], Eigen::Matrix<T, 3, 1>::UnitZ()) *    
-        Eigen::AngleAxis<T>(values[1], Eigen::Matrix<T, 3, 1>::UnitY()) *  
-        Eigen::AngleAxis<T>(values[0], Eigen::Matrix<T, 3, 1>::UnitX())     
-    );
-  };
+    T val;
+    std::vector<T> values;
+    while (stream >> val) {
+        values.push_back(val);
+    }
+    if (values.size() == 4) {
+        q = Eigen::Quaternion<T>(values[3], values[0], values[1], values[2]);
+    } 
+    else if (values.size() == 3) {
+        q = Eigen::Quaternion<T>(
+            Eigen::AngleAxis<T>(values[2], Eigen::Matrix<T, 3, 1>::UnitZ()) *
+            Eigen::AngleAxis<T>(values[1], Eigen::Matrix<T, 3, 1>::UnitY()) *
+            Eigen::AngleAxis<T>(values[0], Eigen::Matrix<T, 3, 1>::UnitX())
+        );
+    }
+    else {
+        LOG_F(ERROR,"Rotation values contain %i elements instead of 3 or 4 elements",
+              static_cast<int>(values.size()));
+        return;
+    }
 };
 
 /**
@@ -102,7 +99,6 @@ void rot2str(const math::Rot3<T>& q, std::string& str_){
  * @brief This is a locale-safe version of string-to-double, which is suprisingly
  * difficult to do correctly.  This function ensures that the C locale is used
  * for parsing, as that matches up with what the XSD for double specifies.
- * @note this enforce require c++17 std !!! becuase of std::is_same_v
  */
 template<typename T>
 void str2num(const char *in, T& num_)
@@ -123,5 +119,4 @@ void str2num(const char *in, T& num_)
       LOG_F(ERROR, "failed converting string to %s: %s", typeid(T).name(), e.what());
   }
 };
-
 #endif // URDF_UTILITIES_H
