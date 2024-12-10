@@ -35,11 +35,6 @@ namespace urdf {
     /// \brief default destrcutor 
     ~Pose(){};
 
-    /// \brief export a Pose object into an XML based
-    /// @warning the rotation is exported as quertion 4 elms rep
-    /// not rpy fixe that or make maroc define alterntives !!!
-    bool export2xml(tinyxml2::XMLElement* xml);
-
     /// \brief rest memeber varaibles 
     void clear();
 

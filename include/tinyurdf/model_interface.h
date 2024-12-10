@@ -45,4 +45,5 @@ namespace urdf {
         std::shared_ptr<Link<T>> root_link_;
     };
 }; // namespace urdf
+typedef std::shared_ptr<urdf::ModelInterface<>> ModelInterfaceSharedPtrd;
 #endif // MODEL_INTERFACE_HPP

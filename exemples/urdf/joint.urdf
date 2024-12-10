@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+
+<joint name="joint_1" type="revolute">
+  <origin rpy = "3.1416 2.7629E-18 -4.9305E-36" xyz="0 0 0.15643" />
+  <parent link="base_link"/>
+  <child link="shoulder_link"/>
+  <axis xyz="0 0 1"/>
+  <limit effort="39" velocity="1.3963"/>
+  <calibration rising="0.0" falling ="0.0"/>
+  <mimic joint = "joint_1" offset ="1.0" multiplier = "1.0" />
+  <dynamics damping="0.0" friction="0.0"/>
+  <safety_controller k_velocity="10" k_position="15" soft_lower_limit="-2.0" soft_upper_limit="0.5"/>
+</joint>

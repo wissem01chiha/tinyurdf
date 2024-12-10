@@ -46,37 +46,23 @@ namespace urdf {
     template <typename T>
     Pose<T>::Pose(tinyxml2::XMLElement *xml)
     {
-        clear();
-        if (xml) 
+      clear();
+      if (xml) 
+      {
+        const char *xyz_str = xml->Attribute("xyz");
+        const char *rpy_str = xml->Attribute("rpy");
+        if (xyz_str) 
         {
-          const char *xyz_str = xml->Attribute("xyz");
-          const char *rpy_str = xml->Attribute("rpy");
-          if (xyz_str) 
-          {
-            std::istringstream stream(xyz_str);
-            str2vec<T>(stream, position);
-          }
-          if (rpy_str) 
-          {
-            std::istringstream stream(rpy_str);
-            str2rot<T>(stream, rotation);
-          }
+          std::istringstream stream(xyz_str);
+          str2vec<T>(stream, position);
         }
+        if (rpy_str) 
+        {
+          std::istringstream stream(rpy_str);
+          str2rot<T>(stream, rotation);
+        }
+      }
     }
-
-  template<typename T>
-  bool Pose<T>::export2xml(tinyxml2::XMLElement* xml)
-  { 
-    tinyxml2::XMLElement* origin = xml->GetDocument()->NewElement("origin");
-    std::string pose_xyz_str;
-    vec2str<T>(position, pose_xyz_str);
-    std::string pose_rpy_str;
-    rot2str<T>(rotation, pose_rpy_str);
-    origin->SetAttribute("xyz", pose_xyz_str.c_str());
-    origin->SetAttribute("rpy", pose_rpy_str.c_str());
-    xml->LinkEndChild(origin);
-    return true;
-  }
 
   template <typename T>
   void Pose<T>::clear()

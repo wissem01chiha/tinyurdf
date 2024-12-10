@@ -174,7 +174,7 @@ namespace urdf {
   };
 
   /**
-   * @brief Represents a general description of a link element in a 
+   * @brief represents a general description of a link element in a 
    * graph-based structure mechanism.
    * This structure allows modeling more complex connections between 
    * child and parent links via joints, representing a graph of linked 
@@ -224,6 +224,7 @@ namespace urdf {
     std::shared_ptr<Inertial<T>>            inertial;
     std::shared_ptr<Visual<T>>              visual;
     std::shared_ptr<Collision<T>>           collision;
+    std::shared_ptr<Material<T>>            material;
 
     /// \brief return a pointer to the parent links    
     std::shared_ptr<Link<T>> getParents() const;
@@ -231,7 +232,7 @@ namespace urdf {
     /// \brief set a new parent of the link 
     void setParent(std::shared_ptr<Link<T>> parent);
 
-    /// \brief 
+    /// \brief set the parent joint if not yet set
     void setParentJoint(std::shared_ptr<Joint<T>> child);
 
     /// \brief add a new child link 

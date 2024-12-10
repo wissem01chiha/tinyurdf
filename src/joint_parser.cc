@@ -1,27 +1,36 @@
 #include "joint_parser.h"
+#include "iostream"
 
 namespace tinyurdf{
 
   template <typename T>
   JointParser<T>::JointParser()
   {
-    
+    joint  = std::make_unique<urdf::Joint<T>>();
   }
 
   template <typename T>
   JointParser<T>::JointParser(tinyxml2::XMLElement *config_)
   {
-    this->config = config_;
+    config = config_;
+    joint  = std::make_unique<urdf::Joint<T>>();
   }
 
   template <typename T>
   JointParser<T>::JointParser(const JointParser &rhs)
   {
+    this->config = rhs.config;
+    this->joint  = std::make_unique<urdf::Joint<T>>(*rhs.joint);
   }
 
   template <typename T>
   bool JointParser<T>::parseDynamics(tinyxml2::XMLElement* xml)
   {
+    if(xml == nullptr){
+      LOG_F(ERROR, "Joint : %s has no dynamics",this->joint->name.c_str());
+      return false;
+    }
+    joint->dynamics = std::make_shared<urdf::JointDynamics<T>>();
     joint->dynamics->clear();
     const char* damping_str = xml->Attribute("damping");
     if (damping_str == NULL){
@@ -62,9 +71,14 @@ namespace tinyurdf{
   template <typename T>
   bool JointParser<T>::parseLimits(tinyxml2::XMLElement* xml)
   {
+    if(xml== nullptr){
+      LOG_F(ERROR, "Joint : %s has no limits",this->joint->name.c_str());
+      return false;
+    }
+    joint->limits = std::make_shared<urdf::JointLimits<T>>();
     joint->limits->clear();
     const char* lower_str = xml->Attribute("lower");
-    if (lower_str == NULL){
+    if (!lower_str){
       LOG_F(WARNING,"joint limit: no lower, defaults to 0");
       joint->limits->lower = static_cast<T>(0.0);
     }
@@ -79,7 +93,7 @@ namespace tinyurdf{
     }
     const char* upper_str = xml->Attribute("upper");
     if (upper_str == NULL){
-      LOG_F(WARNING,"urdfdom.joint_limit: no upper, , defaults to 0");
+      LOG_F(WARNING,"joint_limit: no upper, defaults to 0");
       joint->limits->upper =static_cast<T>(0.0);
     }
     else
@@ -126,9 +140,14 @@ namespace tinyurdf{
   template <typename T>
   bool JointParser<T>::parseSafety(tinyxml2::XMLElement* xml)
   {
+    if(xml == nullptr){
+      LOG_F(ERROR, "Joint : %s has no safety",this->joint->name.c_str());
+      return false;
+    }
+    joint->safety = std::make_shared<urdf::JointSafety<T>>();
     joint->safety->clear();
     const char* soft_lower_limit_str = xml->Attribute("soft_lower_limit");
-    if (soft_lower_limit_str == NULL)
+    if (!soft_lower_limit_str)
     {
       LOG_F(WARNING,"joint safety: no soft_lower_limit, using default value");
       joint->safety->soft_lower_limit =static_cast<T>(0.0);
@@ -138,7 +157,7 @@ namespace tinyurdf{
       try {
         str2num<T>(soft_lower_limit_str, joint->safety->soft_lower_limit);
       } catch(std::runtime_error &) {
-         LOG_F(ERROR, "soft_lower_limit value (%s) is not a valid float", soft_lower_limit_str);
+         LOG_F(ERROR, "soft_lower_limit value (%s) is not a valid", soft_lower_limit_str);
         return false;
       }
     }
@@ -193,11 +212,16 @@ namespace tinyurdf{
   template <typename T>
   bool JointParser<T>::parseCalibration(tinyxml2::XMLElement* xml)
   {
+    if(xml== nullptr){
+      LOG_F(ERROR, "Joint : %s has no Calibration",this->joint->name.c_str());
+      return false;
+    }
+    joint->calibration = std::make_shared<urdf::JointCalibration<T>>();
     joint->calibration->clear();
     const char* rising_position_str = xml->Attribute("rising");
     if (rising_position_str == NULL)
     {
-      LOG_F(WARNING,"joint_calibration: no rising, using default value");
+      LOG_F(WARNING,"joint calibration: no rising, using default value");
       joint->calibration->rising = static_cast<T>(0.0);
     }
     else
@@ -214,7 +238,7 @@ namespace tinyurdf{
     const char* falling_position_str = xml->Attribute("falling");
     if (falling_position_str == NULL)
     {
-      LOG_F(WARNING,"urdfdom.joint_calibration: no falling, using default value");
+      LOG_F(WARNING,"joint calibration: no falling, using default value");
       joint->calibration->falling = static_cast<T>(0.0);
     }
     else
@@ -234,6 +258,11 @@ namespace tinyurdf{
   template <typename T>
   bool JointParser<T>::parseMimic(tinyxml2::XMLElement* xml)
   {
+    if(xml == nullptr){
+      LOG_F(ERROR, "Joint : %s has no Mimic",this->joint->name.c_str());
+      return false;
+    }
+    joint->mimic = std::make_shared<urdf::JointMimic<T>>();
     joint->mimic->clear();
     const char* joint_name_str = xml->Attribute("joint");
     if (joint_name_str == NULL)
@@ -260,7 +289,7 @@ namespace tinyurdf{
       }
   }
     const char* offset_str = xml->Attribute("offset");
-    if (offset_str == NULL)
+    if (offset_str== nullptr)
     {
       LOG_F(WARNING,"joint mimic: no offset, using default value of 0");
       joint->mimic->offset = static_cast<T>(0.0) ;
@@ -378,8 +407,8 @@ namespace tinyurdf{
       }
       else
       {
-        LOG_F(ERROR, "specified parent '%s' in origin does not match any known parent links.",
-        parent_str.c_str());
+        LOG_F(ERROR, "specified parent '%s' in origin of joint '%s' does not match any known parent links.",
+        parent_str.c_str(), joint->name.c_str());
         return false;
       }
   }
@@ -447,13 +476,18 @@ namespace tinyurdf{
   template <typename T>
   bool JointParser<T>::parse()
   {
-    this->joint->clear();
-    tinyxml2::XMLElement *xml_joint = config->FirstChildElement("joint");
-
-    if (!parseName(xml_joint)) {
+    if(!this->joint) { 
+      LOG_F(ERROR, "Joint Parser Point to non valid joint class object");
       return false;
     }
-    if (!parseType(xml_joint)) {
+    else{
+      this->joint->clear();
+    }
+    
+    if (!parseName(config)) {
+      return false;
+    }
+    if (!parseType(config)) {
       return false;
     }
     if (!parseParentChildLinks()) {

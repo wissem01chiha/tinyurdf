@@ -12,6 +12,10 @@
 
 namespace urdf {
 
+    /**
+     * @brief Twist structre generic definition 
+     * 
+     */
     template<typename T= double >
     class Twist
     {

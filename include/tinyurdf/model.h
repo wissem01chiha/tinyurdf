@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <tinyxml2/tinyxml2.h>
 #include "urdf_utilities.h"
 #include "joint.h"
@@ -19,13 +20,10 @@ namespace urdf {
     Model();
 
     /// \brief Load Model from TiXMLElement
-    bool Model(TiXmlElement *xml);
+    Model(tinyxml2::XMLElement* xml);
 
     /// \brief Load Model given a filename
-    bool Model(const std::string& filename);
-
-    /// \brief Load Model from a XML-string
-    bool Model(const std::string& xmlstring);
+    Model(const std::string& filename);
 
     /// \brief return a shared pointer to the root link 
     std::shared_ptr<const Link<T>>  getRoot(void) const{return this->root_link_;};
@@ -34,28 +32,31 @@ namespace urdf {
     std::shared_ptr<const Link<T>>  getLink(const std::string& name) const;
 
     /// \brief return a shared pointer to a given Joint by name 
-    std::shared_ptr<const Joint> getJoint(const std::string& name) const;
+    std::shared_ptr<const Joint<T>> getJoint(const std::string& name) const;
 
     /// \brief get the multibody model name 
     const std::string& getName() const {return name_;};
 
     /// \brief return a vector of pointers to model links
-    void getLinks(std::vector<std::shared_ptr<Link>>& links) const;
+    void getLinks(std::vector<std::shared_ptr<Link<T>>>& links) const;
+
+    /// \brief rest memeber vars
+    void clear();
 
     /// \brief get parent Link of a Link given name
-    std::shared_ptr<const Link> getParentLink(const std::string& name) const;
+    std::shared_ptr<const Link<T>> getParentLink(const std::string& name) const;
 
     /// \brief get parent Joint of a Link given name
-    std::shared_ptr<const Joint> getParentJoint(const std::string& name) const;
+    std::shared_ptr<const Joint<T>> getParentJoint(const std::string& name) const;
 
     /// \brief get child Link of a Link given name
-    std::shared_ptr<const Link> getChildLink(const std::string& name) const;
+    std::shared_ptr<const Link<T>> getChildLink(const std::string& name) const;
 
     /// \brief get child Joint of a Link given name
-    std::shared_ptr<const Joint> getChildJoint(const std::string& name) const;
+    std::shared_ptr<const Joint<T>> getChildJoint(const std::string& name) const;
 
     /// \brief complete list of Links
-    std::map<std::string, std::shared_ptr<Link>> links_;
+    std::map<std::string, std::shared_ptr<Link<T>>> links_;
 
     /// \brief complete list of Joints
     std::map<std::string, std::shared_ptr<Joint<T>>> joints_;
@@ -65,16 +66,13 @@ namespace urdf {
 
   private:
 
-    /// \brief rest memeber varibles 
-    void clear();
-
     std::string name_;
 
     /// \brief non-const getLink()
-    void getLink(const std::string& name,std::shared_ptr<Link> &link) const;
+    void getLink(const std::string& name,std::shared_ptr<Link<T>> &link) const;
 
     /// non-const getMaterial()
-    std::shared_ptr<Material> getMaterial(const std::string& name) const;
+    std::shared_ptr<Material<T>> getMaterial(const std::string& name) const;
 
     /// in initXml(), onece all links are loaded,
     /// it's time to build a tree
@@ -89,8 +87,8 @@ namespace urdf {
     ///  typically, root link is the world(inertial).  Where world is a special link
     /// or is the root_link_ the link attached to the world by PLANAR/FLOATING joint?
     ///  hmm...
-    std::shared_ptr<Link> root_link_;
-
+    std::vector<std::shared_ptr<Link<T>>> root_link_;
   };
-}; // namespace urdf 
+  
+}; // namespace urdf
 #endif // MODEL_H

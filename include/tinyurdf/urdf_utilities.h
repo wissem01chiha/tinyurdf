@@ -97,7 +97,7 @@ void rot2str(const math::Rot3<T>& q, std::string& str_){
 
 /**
  * @brief This is a locale-safe version of string-to-double, which is suprisingly
- * difficult to do correctly.  This function ensures that the C locale is used
+ * difficult to do correctly.This function ensures that the C locale is used
  * for parsing, as that matches up with what the XSD for double specifies.
  */
 template<typename T>
@@ -119,4 +119,20 @@ void str2num(const char *in, T& num_)
       LOG_F(ERROR, "failed converting string to %s: %s", typeid(T).name(), e.what());
   }
 };
+
+namespace urdf {
+
+    inline void split(const std::string& str,std::vector<std::string>& split_result,
+            const std::string& delimiter)
+    {
+        size_t start = 0;
+        size_t end   = 0;
+
+        while ((end = str.find(delimiter, start)) != std::string::npos) {
+            split_result.push_back(str.substr(start, end - start));
+            start = end + delimiter.length();
+        }
+        split_result.push_back(str.substr(start));
+    };
+}; // namesapce urdf
 #endif // URDF_UTILITIES_H

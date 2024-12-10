@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
 
 find_package(GTest QUIET)
 
-if(${GTest_FOUND})
-    message(STATUS "GTest found: ${GTest_INSTALL_DIR}")
+if(GTest_FOUND)
+    message(STATUS "GTest found: ${GTest_DIR}")
     include_directories(SYSTEM ${GTEST_INCLUDE_DIRS})
 else()
     message(STATUS "GTest not found. Downloading and building from source...")

@@ -1,6 +1,8 @@
-# Software Installation
+Installation
+----
 
-## How to install VCPKG
+How to install VCPKG
+----
 
 Official Link: <https://vcpkg.io/en/index.html>
 
@@ -11,11 +13,35 @@ git clone https://github.com/Microsoft/vcpkg.git
 ./vcpkg/bootstrap-vcpkg.sh # Unix
 ```
 
-## How to install the Conan Package Manager
+How to install the Conan Package Manager
+----
 
 Official installation guide is [here](https://docs.conan.io/2/).
 
 The conan database is [here](https://conan.io/center/).
+
+How to install Google Test on ubuntu
+----
+
+for gtest installation : https://gist.github.com/Cartexius/4c437c084d6e388288201aadf9c8cdd5?permalink_comment_id=2822039#gistcomment-2822039
+
+```cmd
+sudo apt-get install libgtest-dev
+cd /usr/src/googletest/googletest
+sudo mkdir build
+cd build
+sudo cmake ..
+sudo make
+sudo cp lib/libgtest* /usr/lib/
+cd ..
+sudo rm -rf build
+```
+Then do:
+```cmd
+sudo mkdir /usr/local/lib/googletest
+sudo ln -s /usr/lib/libgtest.a /usr/local/lib/googletest/libgtest.a
+sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/googletest/libgtest_main.a
+```
 
 ### Installation Steps
 

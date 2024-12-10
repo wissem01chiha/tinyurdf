@@ -10,12 +10,22 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(BUILD_SHARED_LIBS  OFF)
 set(BUILD_TESTS ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug  FORCE)
+endif()
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -DDEBUG")
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+    endif()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
 endif()
-cmake_policy(SET CMP0135 NEW)
+if(WIN32)
+    cmake_policy(SET CMP0135 NEW)
+endif()
 set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
@@ -29,10 +39,9 @@ set(TINYURDF_LIBRARY_SOURCES
     src/pose.cc
     src/link.cc
     src/joint.cc
+    src/model.cc
     src/joint_parser.cc
-    #src/world.cpp
-    #src/sensor.cpp
-    #src/check_urdf.cpp
+    src/urdf_version.cc
 )
 
 set(TINYURDF_INCLUDE_DIRECTORIES
@@ -54,7 +63,10 @@ if (BUILD_TESTS)
     set(TINYURDF_TEST_SOURCES
         test/color_test.cc
         test/pose_test.cc
+        test/joint_test.cc
         test/urdf_utilities_test.cc
+        test/urdf_version_test.cc
+        test/joint_parser_test.cc
     )
 
     foreach(TEST_SOURCE_FILE IN LISTS TINYURDF_TEST_SOURCES)
@@ -62,6 +74,9 @@ if (BUILD_TESTS)
         add_executable(${TEST_EXECUTABLE_NAME} ${TEST_SOURCE_FILE})
         target_include_directories(${TEST_EXECUTABLE_NAME} PRIVATE ${TINYURDF_INCLUDE_DIRECTORIES})
         target_link_libraries(${TEST_EXECUTABLE_NAME} PRIVATE GTest::gtest_main tinyurdf)
+        if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+            target_compile_options(${TEST_EXECUTABLE_NAME} PRIVATE -g  -DDEBUG)
+        endif()
         add_dependencies(${TEST_EXECUTABLE_NAME} tinyurdf)
         include(GoogleTest)
         gtest_discover_tests(${TEST_EXECUTABLE_NAME})

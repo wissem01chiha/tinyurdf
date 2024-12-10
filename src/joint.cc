@@ -51,4 +51,4 @@ namespace urdf {
 
 template class urdf::Joint<double>;
 template class urdf::Joint<long double>;
-template class urdf::Joint<float>;
+template class urdf::Joint<float>; 

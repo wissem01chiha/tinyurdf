@@ -44,3 +44,15 @@ TEST(Str2NumTest, ConvertStringToDouble) {
 
     EXPECT_DOUBLE_EQ(result, 3.14159);   
 };
+
+TEST(SplitTest, SimpleSplit) {
+
+    std::string input = "1.2";
+    std::vector<std::string> result;
+    
+    urdf::split(input, result, ".");
+
+    ASSERT_EQ(result.size(), 2);
+    EXPECT_EQ(result[0], "1");
+    EXPECT_EQ(result[1], "2");
+};
