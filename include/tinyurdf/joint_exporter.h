@@ -9,10 +9,13 @@
 #include <tinyxml2/tinyxml2.h>
 #include "urdf_utilities.h"
 #include "urdf_exporter.h"
+#include "urdf_version.h"
 #include "joint.h"
+#include "pose.h"
 
 namespace tinyurdf {
 
+    /// @brief json port exporter 
     template< typename T = double >
     class JointJsonExporter : public URDFExporter
     {
@@ -33,7 +36,7 @@ namespace tinyurdf {
             std::shared_ptr<urdf::Joint<T>>   joint;
     };
 
-
+    /// @brief protobuffer port exporter
     template< typename T = double >
     class JointProtoExporter : public URDFExporter
     {
@@ -54,6 +57,7 @@ namespace tinyurdf {
             std::shared_ptr<urdf::Joint<T>>   joint;
     };
 
+    /// @brief yaml port exporter
     template< typename T = double >
     class JointYamlExporter : public URDFExporter
     {

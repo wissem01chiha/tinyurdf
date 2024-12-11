@@ -2,9 +2,10 @@
 #define WOLRD_PARSER
 
 #include "world.h"
+
 namespace tinyurdf
 {
-    template<typename T>
+    template<typename T = double >
     class WorldParser
     {
     public:

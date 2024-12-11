@@ -63,6 +63,16 @@ namespace urdf {
       return std::shared_ptr<const Joint<T>>();
   }
 
+  template <typename T>
+  void Model<T>::getLink(const std::string &name, std::shared_ptr<Link<T>> &link) const
+  {
+  }
+
+  template <typename T>
+  std::shared_ptr<Material<T>> Model<T>::getMaterial(const std::string &name) const
+  {
+      return std::shared_ptr<Material<T>>();
+  }
 
   template <typename T>
   bool Model<T>::initTree(std::map<std::string, std::string> &parent_link_tree)

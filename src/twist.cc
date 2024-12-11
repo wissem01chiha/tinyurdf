@@ -8,7 +8,7 @@ namespace urdf
     }
 
   template <typename T>
-  Twist<T>::Twist(tinyxml2::XMLElement *config)
+  Twist<T>::Twist(tinyxml2::XMLElement *xml)
   {
     this->clear();
     if (xml)
@@ -17,11 +17,11 @@ namespace urdf
       if (linear_char != NULL)
       {
         try {
-          twist.linear.init(linear_char);
+          //twist.linear.init(linear_char);
         }
-        catch (ParseError &e) {
-          twist.linear.clear();
-          LOG_F(ERROR, "Malformed linear string [%s]: %s", linear_char, e.what());
+        catch (std::runtime_error) {
+          //twist.linear.clear();
+          //LOG_F(ERROR, "Malformed linear string [%s]: %s", linear_char, e.what());
         }
       }
 
@@ -29,11 +29,11 @@ namespace urdf
       if (angular_char != NULL)
       {
         try {
-          twist.angular.init(angular_char);
+          //twist.angular.init(angular_char);
         }
-        catch (ParseError &e) {
-          twist.angular.clear();
-          LOG_F(ERROR, "Malformed angular [%s]: %s", angular_char, e.what());
+        catch (std::runtime_error) {
+          //twist.angular.clear();
+          //LOG_F(ERROR, "Malformed angular [%s]: %s", angular_char, e.what());
         }
       }
     }
@@ -42,8 +42,8 @@ namespace urdf
   template <typename T>
   void Twist<T>::clear()
   {
-    this->linear.clear();
-    this->angular.clear();
+    //this->linear.clear();
+    //this->angular.clear();
   };
 
 }; // namespace urdf

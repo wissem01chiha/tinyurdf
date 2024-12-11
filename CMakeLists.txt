@@ -8,8 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(BUILD_SHARED_LIBS  OFF)
-set(BUILD_TESTS ON)
-
+set(BUILD_TESTS         ON)
+set(USE_VTK             ON)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug  FORCE)
 endif()
@@ -30,7 +30,13 @@ set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 include(External-Eigen)
-include(External-GTest)
+if (BUILD_TESTS)
+    include(External-GTest)
+endif()
+if(USE_VTK)
+    include(External-VTK)
+endif(USE_VTK)
+
 add_subdirectory(extern/loguru)
 add_subdirectory(extern/tinyxml2)
 
@@ -40,6 +46,9 @@ set(TINYURDF_LIBRARY_SOURCES
     src/link.cc
     src/joint.cc
     src/model.cc
+    src/world.cc
+    src/sensor.cc
+    src/twist.cc
     src/joint_parser.cc
     src/urdf_version.cc
 )
@@ -67,6 +76,7 @@ if (BUILD_TESTS)
         test/urdf_utilities_test.cc
         test/urdf_version_test.cc
         test/joint_parser_test.cc
+        test/link_parser_test.cc
     )
 
     foreach(TEST_SOURCE_FILE IN LISTS TINYURDF_TEST_SOURCES)

@@ -10,7 +10,7 @@
 
 namespace urdf
 {
-    template<typename T>
+    template<typename T = double >
     class Camera 
     {
     public:
@@ -30,13 +30,14 @@ namespace urdf
             L8, R8G8B8, B8G8R8, BAYER_RGGB8, BAYER_BGGR8, 
             BAYER_GBRG8, BAYER_GRBG8
         };
+
         Type type; 
 
         unsigned int width, height;
         T hfov, near, far; 
     };
 
-    template<typename T>
+    template<typename T = double >
     class Sensor
     {
     public:

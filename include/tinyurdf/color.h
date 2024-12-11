@@ -12,6 +12,21 @@ namespace urdf {
   class Color
   {
   public:
+
+    enum class Type
+    {
+      Red,
+      Green,
+      Blue,
+      Black,
+      White,
+      Yellow,
+      Cyan,
+      Magenta
+    };
+
+    T r, g, b, a;
+
     /// \brief default constructor 
     Color();
 
@@ -21,13 +36,15 @@ namespace urdf {
     /// \brief constructor from string input 
     Color(const std::string &vector_str);
 
+    /// @brief constructor from Color::Type object
+    Color(const Type type_);
+
     /// \brief convert a Color object value into a string, space-separated.
     static std::string str();
 
     /// \brief reset memeber variables 
     void clear();
-    
-    T r, g, b, a;
+  
   };
 }; // namesapce urdf 
 #endif // COLOR_H

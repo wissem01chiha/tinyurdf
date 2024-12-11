@@ -33,6 +33,41 @@ namespace urdf
     }
 
     template <typename T>
+    Color<T>::Color(const Type type_)
+    {
+        switch (type_)
+        {
+        case Type::Red:
+            r = 1.0; g = 0.0; b = 0.0; a = 1.0;  
+            break;  
+        case Type::Green:
+            r = 0.0; g = 1.0; b = 0.0; a = 1.0;
+            break;
+        case Type::Blue:
+            r = 0.0; g = 0.0; b = 1.0; a = 1.0;
+            break;
+        case Type::Black:
+            r = 0.0; g = 0.0; b = 0.0; a = 1.0;
+            break;
+        case Type::White:
+            r = 1.0; g = 1.0; b = 1.0; a = 1.0;
+            break;
+        case Type::Yellow:
+            r = 1.0; g = 1.0; b = 0.0; a = 1.0;
+            break;
+        case Type::Cyan:
+            r = 0.0; g = 1.0; b = 1.0; a = 1.0;
+            break;
+        case Type::Magenta:
+            r = 1.0; g = 0.0; b = 1.0; a = 1.0;
+            break;
+        default:
+            r = 0.0; g = 0.0; b = 0.0; a = 1.0;  
+            break;
+        }
+    }
+
+    template <typename T>
     Color<T>::Color(const std::string &vector_str)
     {
         clear();
@@ -47,6 +82,7 @@ namespace urdf
         if (rgba.size() != 4)
         {
             LOG_F(ERROR, "Color contains %i elements instead of 4 elements", (int)rgba.size());
+            return;
         }
         this->r = rgba[0];
         this->g = rgba[1];

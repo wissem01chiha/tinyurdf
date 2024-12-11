@@ -13,12 +13,12 @@
 
 namespace urdf {
 
-  template<typename T = double >
+  template<typename T >
   struct Entity
   {
     std::shared_ptr<ModelInterface<T>> model;
-    Pose<T>     origin;
-    Twist<T>    twist;
+    Pose<T>                            origin;
+    Twist<T>                           twist;
   };
 
   template<typename T = double >
@@ -31,14 +31,14 @@ namespace urdf {
     /// \brief construct from xml elment
     World(tinyxml2::XMLElement* xml);
 
-    /// \brief  rest member varibles
+    /// \brief  rest varibles
     void clear();
 
     /// \brief world name must be unique
-    std::unique_ptr<std::string> name;
+    std::unique_ptr<std::string> name = nullptr;
 
     /// \brief world models 
-    std::vector<Entity<T>> models;
+    std::vector<Entity<T>>       models;
   };
 } // namespace urdf
 #endif //  WORLD_HPP

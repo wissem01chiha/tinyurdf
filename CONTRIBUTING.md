@@ -22,3 +22,5 @@ The work is in progress, and any contributions to the project are welcome. See t
 - [ ] Finalize documentation using [Doxygen](), in the [docs](/docs/) folder.
 
 Feel free to [mail](mailto:chihawissem08@gmail.com) me.
+
+https://yaml.org/spec/1.2.2/

@@ -15,73 +15,118 @@ namespace urdf {
 
   class Geometry
   {
-    enum class Type { SPHERE, BOX, CYLINDER, MESH } type;
-    virtual ~Geometry() = default;  
+    public:
+      enum class Type { SPHERE, BOX, CYLINDER, MESH } type;
+      virtual ~Geometry() = default;  
   };
 
   template<typename T = double >
   class Sphere : public Geometry 
   {
-    T radius;
-    Sphere(){ this->clear(); };  
-    void clear(){radius = static_cast<T>(0.0);};
+    public:
+      T radius;
+      Sphere(){ this->clear(); };  
+      void clear(){radius = static_cast<T>(0.0);};
   };
 
   template<typename T = double >
   class Box : public Geometry
   {
-    math::Vec3<T> dim;
+    public:
+      math::Vec3<T> dim;
 
-    Box(){ this->clear();};
-    void clear(){ dim.setZero(); };
+      Box(){ this->clear();};
+      void clear(){ dim.setZero(); };
   };
 
   template<typename T = double >
   class Cylinder : public Geometry
   {
-    T   length;
-    T   radius;
+    public:
+      T   length;
+      T   radius;
 
-    Cylinder(){this->clear();};
+      Cylinder(){this->clear();};
 
-    void clear(){ 
-        length = static_cast<T>(0.0);
-        radius = static_cast<T>(0.0);
-    };
+      void clear(){ 
+          length = static_cast<T>(0.0);
+          radius = static_cast<T>(0.0);
+      };
   };
 
   template<typename T = double >
   class Mesh : public Geometry
   {
-    std::string    texture_filename;
-    math::Vec3<T>  scale;
-    Color<T>       color;
+    public:
+      std::string    texture_filename;
+      math::Vec3<T>  scale;
+      Color<T>       color;
 
-    Mesh(){ this->clear();};
-      
-    void clear() {
-        color.clear();
-        texture_filename.clear();
-        scale.setOnes();
-    };
+      Mesh(){ this->clear();};
+        
+      void clear() {
+          color.clear();
+          texture_filename.clear();
+          scale.setOnes();
+      };
   };
 
   template<typename T = double >
   class Material
   {
-    std::string  name;
-    std::string  texture_filename;
-    Color<T>     color;
-    T            density;
-    
-    Material(){this->clear();};
+    public:
+      std::string  name;
+      std::string  texture_filename;
+      Color<T>     color;
+      T            density;
 
-    void clear(){
-        name.clear();
-        texture_filename.clear();
-        color.clear();
-        density = static_cast<T>(0.0);
-    };
+      /// @brief basic material family type declaration
+      /// @warning This is very generic; the development 
+      /// of an extensive materials library 
+      /// is planned for future versions
+      enum class Type {
+        Composite,
+        Metal,
+        Polymer,
+        Natural,
+        Ceramic,
+      };
+
+      Material(const Type type_)
+      {
+        switch (type_)
+        {
+        case Type::Metal:
+            name = std::string("Metal");  
+            density = static_cast<T>(1000);
+            color  = Color<T>(1.0,0.5,0.36);
+            break;  
+        case Type::Natural:
+            name = std::string("Natural");  
+            density = static_cast<T>(10);
+            color  = Color<T>(1.0,0.5,0.36);
+            break;
+        case Type::Ceramic:
+            name = std::string("Ceramic");  
+            density = static_cast<T>(120);
+            color  = Color<T>(1.0,0.5,0.36);
+            break;
+        default:
+            name = std::string("UNKNOWN");  
+            density = static_cast<T>(0);
+            color  = Color<T>();
+            break;
+        }
+      };
+
+      Material(){this->clear();};
+
+      void clear(){
+          name.clear();
+          texture_filename.clear();
+          color.clear();
+          density = static_cast<T>(0.0);
+      };
   };
 
   template<typename T = double >
@@ -142,18 +187,19 @@ namespace urdf {
   template<typename T = double >
   class Visual
   {
-    Pose<T>                      origin;
-    std::shared_ptr<Geometry>    geometry;
-    std::string                  material_name;
-    std::shared_ptr<Material<T>> material;
+    public:
+      Pose<T>                      origin;
+      std::shared_ptr<Geometry>    geometry;
+      std::string                  material_name;
+      std::shared_ptr<Material<T>> material;
 
-    Visual(){this->clear();};
-    void clear(){
-        origin.clear();
-        geometry.reset();
-        material_name.clear();
-        material.reset();
-    };
+      Visual(){this->clear();};
+      void clear(){
+          origin.clear();
+          geometry.reset();
+          material_name.clear();
+          material.reset();
+      };
   };
 
   template<typename T = double >
@@ -178,16 +224,8 @@ namespace urdf {
    * graph-based structure mechanism.
    * This structure allows modeling more complex connections between 
    * child and parent links via joints, representing a graph of linked 
-   * elements example graph-based structure:
-   * @verbatim
-   *       child_link (1,i) --- --- parent_link (1,i)
-   *                           |
-   * child_link (2,i) ----- joint(i) --- parent_link (2,i)
-   *             ...           |     ....
-   *      child_link (n,i) ---  --- parent_link (n,i)
-   * @endverbatim
-   * @example 
-   * XML Representation:
+   * elements example graph-based structure.
+   * @example xml representation:
    * @code{.xml}
    * <link name="my_link">
    *   <inertial>

@@ -24,9 +24,11 @@ namespace urdf {
         void clear();
     
         void getLink(const std::string& name, std::shared_ptr<Link<T>> &link) ;
-        std::shared_ptr<Material<T>> getMaterial(const std::string& name)     const;
+
+        std::shared_ptr<Material<T>> getMaterial(const std::string& name) const;
 
         void initTree(std::map<std::string, std::string> &parent_link_tree);
+
         void initRoot(const std::map<std::string, std::string> &parent_link_tree);
     
         /// \brief complete list of model Links
@@ -45,5 +47,5 @@ namespace urdf {
         std::shared_ptr<Link<T>> root_link_;
     };
 }; // namespace urdf
-typedef std::shared_ptr<urdf::ModelInterface<>> ModelInterfaceSharedPtrd;
+typedef std::shared_ptr<urdf::ModelInterface<>> ModelInterfaceSharedPtr;
 #endif // MODEL_INTERFACE_HPP

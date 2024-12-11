@@ -40,7 +40,7 @@ namespace urdf {
     /// \brief return a vector of pointers to model links
     void getLinks(std::vector<std::shared_ptr<Link<T>>>& links) const;
 
-    /// \brief rest memeber vars
+    /// \brief reset memeber vars
     void clear();
 
     /// \brief get parent Link of a Link given name
@@ -85,8 +85,7 @@ namespace urdf {
 
     /// Model is restricted to a tree for now, which means there exists one root link
     ///  typically, root link is the world(inertial).  Where world is a special link
-    /// or is the root_link_ the link attached to the world by PLANAR/FLOATING joint?
-    ///  hmm...
+    /// or is the root_link_ the link attached to the world by PLANAR/FLOATING joint
     std::vector<std::shared_ptr<Link<T>>> root_link_;
   };
   

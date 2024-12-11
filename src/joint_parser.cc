@@ -93,7 +93,7 @@ namespace tinyurdf{
     }
     const char* upper_str = xml->Attribute("upper");
     if (upper_str == NULL){
-      LOG_F(WARNING,"joint_limit: no upper, defaults to 0");
+      LOG_F(WARNING,"joint limit: no upper, defaults to 0");
       joint->limits->upper =static_cast<T>(0.0);
     }
     else

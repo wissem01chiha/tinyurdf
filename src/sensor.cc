@@ -20,7 +20,7 @@ namespace urdf
     template <typename T>
     void Camera<T>::clear()
     {
-        hfov, width, height, near, far = std::static_cast<T>(0.0);
+        hfov, width, height, near, far = static_cast<T>(0.0);
     }
 
     template <typename T>
@@ -54,7 +54,7 @@ namespace urdf
         tinyxml2::XMLElement *o = config->FirstChildElement("origin");
         if (o)
         {
-            if (!parsePose(sensor.origin, o))
+        
         }
     }
     template <typename T>
@@ -71,7 +71,6 @@ namespace urdf
     void Sensor<T>::clear()
     {
         this->name.clear();
-        this->sensor.reset();
         this->parent_link_name.clear();
         this->parent_link_.reset();
     }

@@ -49,8 +49,18 @@ TEST(ColorTest, InvalidStringConstructor) {
     EXPECT_NE(color.r, 0.5);
     EXPECT_NE(color.g, 0.5);
     EXPECT_NE(color.b, 0.5);
-    EXPECT_NE(color.a, 1.0);
+    EXPECT_EQ(color.a, 1.0);
 
 }
 
+TEST(ColorTest,ColorFromTypeTest ){
+
+    Color<> color(Color<>::Type::Red);
+
+    EXPECT_EQ(color.r, 1);
+    EXPECT_EQ(color.g, 0);
+    EXPECT_EQ(color.b, 0);
+    EXPECT_EQ(color.a, 1);
+
+}
 };  // namespace urdf

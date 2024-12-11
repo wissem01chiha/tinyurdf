@@ -18,14 +18,39 @@
 #include <vtkSmartPointer.h>
 
 #include "urdf_version.h"
-#include "model_interface.h"
-#include "sensor.h"
 #include "pose.h"
+#include "link.h"
 #include "joint.h"
+#include "world.h"
 
 namespace tinyurdf
 {
-    
+    // write a class for rendring an urdf Link object with many options
+    template<typename T>
+    class vtkLinkRender{
+
+        public:
+            /// @brief default constructor init an empty link with default geomtry
+            /// and init vtk piplie attributs 
+            vtkLinkRender();
+
+            vtkLinkRender(const urdf::Link<T> link_);
+            vtkLinkRender(std::shared_ptr<urdf::Link<T>> link_ptr);
+
+            /// @brief display the object
+            void render();
+
+        private:
+
+    };
+
+    template<typename T>
+    class vtkURDFRender
+    {
+        public:
+    };
+
+
 }; // namespace tinyurdf
 #endif // URDF_RENDER_VTK
 
