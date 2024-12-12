@@ -2,6 +2,7 @@
 #define URDF_PARSER_H
 
 #include <loguru/loguru.hpp>
+#include <tinyxml2/tinyxml2.h>
 #include <args/args.hxx>
 
 #include "urdf_version.h"
@@ -11,24 +12,36 @@
 #include "sensor_parser.h"
 #include "world_parser.h"
 
+namespace tinyurdf {
 
+  template<typename T = double >
+  class URDFParser
+  {
+    public:
+      /// @brief default construtor 
+      URDFParser();
 
+      /// @brief init with a file path 
+      URDFParser(const std::string &path);
 
+      /// @brief main parsing function
+      /// log the time that we had to spend on parsing the file! 
+      void parse();
 
+      /// @brief get a pointer to the parsed model
+      /// @note 
+      std::shared_ptr<urdf::Model<T>>* getModel();
 
+      /// @brief write the parser log to an external file 
+      /// for debug 
+      void log(const std::string &path);
 
-ModelInterfaceSharedPtr  parseURDFFile(const std::string &path)
-{
-    std::ifstream stream( path.c_str() );
-    if (!stream)
-    {
-      CONSOLE_BRIDGE_logError(("File " + path + " does not exist").c_str());
-      return ModelInterfaceSharedPtr();
-    }
+    private:
+      std::shared_ptr<urdf::Model<T>> model = nullptr;
 
-    std::string xml_str((std::istreambuf_iterator<char>(stream)),
-	                     std::istreambuf_iterator<char>());
-    return urdf::parseURDF( xml_str );
-};
+      std::shared_ptr<urdf::World<T>> world = nullptr;
 
+  };
+
+}; // namespace tinyurdf
 #endif // URDF_PARSER_H

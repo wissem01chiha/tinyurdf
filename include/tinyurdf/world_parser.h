@@ -10,6 +10,10 @@ namespace tinyurdf
     {
     public:
         WorldParser();
+
+        bool parse();
+
+        urdf::World<T>* getWorld() const;
     private:
 
     }; 

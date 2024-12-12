@@ -32,7 +32,7 @@ namespace urdf {
         void initRoot(const std::map<std::string, std::string> &parent_link_tree);
     
         /// \brief complete list of model Links
-        std::map<std::string, std::shared_ptr<Link<T>> >   links_;
+        std::map<std::string, std::shared_ptr<Link<T>>>   links_;
 
         /// \brief complete list of Joints
         std::map<std::string, std::shared_ptr<Joint<T>>>   joints_;

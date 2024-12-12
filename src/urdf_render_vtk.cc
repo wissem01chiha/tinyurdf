@@ -2,23 +2,20 @@
 
 namespace tinyurdf {
 
-    template <typename T>
-    vtkLinkRender<T>::vtkLinkRender()
+    vtkURDFRender::vtkURDFRender(const std::string &path)
     {
     }
 
-    template <typename T>
-    vtkLinkRender<T>::vtkLinkRender(const urdf::Link<T> link_)
+    vtkURDFRender::vtkURDFRender(const urdf::Model<> &model)
     {
     }
 
-    template <typename T>
-    vtkLinkRender<T>::vtkLinkRender(std::shared_ptr<urdf::Link<T>> link_ptr)
+    vtkURDFRender::vtkURDFRender(std::shared_ptr<urdf::ModelInterface<>> interface_ptr)
     {
+
     }
 
-    template <typename T>
-    void vtkLinkRender<T>::render()
+    void vtkURDFRender::render() const
     {
     }
 

@@ -13,6 +13,9 @@
 
 namespace urdf {
 
+  /// @brief this is an entity struct withn a world class 
+  /// general defintion for an entity is 
+  /// @tparam T 
   template<typename T >
   struct Entity
   {
@@ -21,6 +24,8 @@ namespace urdf {
     Twist<T>                           twist;
   };
 
+  /// @brief a world based tag is given 
+  /// @note only one world xml elment is allowed !
   template<typename T = double >
   class World
   {

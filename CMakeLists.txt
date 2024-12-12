@@ -50,6 +50,7 @@ set(TINYURDF_LIBRARY_SOURCES
     src/sensor.cc
     src/twist.cc
     src/joint_parser.cc
+    src/link_parser.cc
     src/urdf_version.cc
 )
 

@@ -83,7 +83,7 @@ namespace urdf {
       /// @brief basic material family type declaration
       /// @warning This is very generic; the development 
       /// of an extensive materials library 
-      /// is planned for future versions
+      /// is planned for a future version
       enum class Type {
         Composite,
         Metal,
@@ -142,17 +142,12 @@ namespace urdf {
         /// \brief  safe constructor
         Inertial(T mass, T ixx, T ixy, T ixz, T iyy, T iyz, T izz) {
             if (!isValid(mass, ixx, ixy, ixz, iyy, iyz, izz)) {
-                std::ostringstream error;
-                error << "Invalid inertia matrix or mass."
-                    << "Mass: " << mass
-                    << ", ixx: " << ixx << ", ixy: " << ixy << ", ixz: " << ixz
-                    << ", iyy: " << iyy << ", iyz: " << iyz << ", izz: " << izz;
-                LOG_F(ERROR, "%s", error.str().c_str());
-                throw std::invalid_argument(error.str());
-            }
+                this->clear();
+            }else{
             this->mass = mass;
             this->ixx = ixx; this->ixy = ixy; this->ixz = ixz; 
             this->iyy = iyy; this->iyz = iyz; this->izz = izz;
+            }
         };
 
         void clear(){
@@ -228,26 +223,29 @@ namespace urdf {
    * @example xml representation:
    * @code{.xml}
    * <link name="my_link">
+   * 
    *   <inertial>
    *     <origin xyz="0 0 0.5" rpy="0 0 0"/>
    *     <mass value="1"/>
    *     <inertia ixx="100"  ixy="0"  ixz="0" iyy="100" iyz="0" izz="100" />
    *   </inertial>
+   * 
    *   <visual>
    *     <origin xyz="0 0 0" rpy="0 0 0" />
-   *     <geometry>
-   *       <box size="1 1 1" />
-   *     </geometry>
+   *     <geometry type= "box" size = "1 1 1" />  
+   *     <geometry type= "mesh" filename ="mesh1.stl" scale = "1 1 1" />  
    *     <material name="Cyan">
    *       <color rgba="0 1.0 1.0 1.0"/>
+   *       <texture  filename = "file1.STL" />
+   *       <density value = "1.0" />
    *     </material>
    *   </visual>
+   * 
    *   <collision>
-   *     <origin xyz="0 0 0" rpy="0 0 0"/>
-   *     <geometry>
-   *       <cylinder radius="1" length="0.5"/>
-   *     </geometry>
+   *     <origin xyz="0 0 0" rpy = "0 0 0"/>
+   *     <geometry type = "cylinder" radius="1" length="0.5" />
    *   </collision>
+   * 
    * </link>
    * @endcode 
    */

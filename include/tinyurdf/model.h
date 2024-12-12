@@ -56,13 +56,13 @@ namespace urdf {
     std::shared_ptr<const Joint<T>> getChildJoint(const std::string& name) const;
 
     /// \brief complete list of Links
-    std::map<std::string, std::shared_ptr<Link<T>>> links_;
+    std::map<std::string, std::shared_ptr<Link<T>>>     links_;
 
     /// \brief complete list of Joints
-    std::map<std::string, std::shared_ptr<Joint<T>>> joints_;
+    std::map<std::string, std::shared_ptr<Joint<T>>>    joints_;
 
     /// \brief complete list of Materials
-    std::map<std::string, std::shared_ptr<Material<T>>> materials_;
+    std::map<std::string, std::shared_ptr<Material<T>>>  materials_;
 
   private:
 
@@ -86,7 +86,7 @@ namespace urdf {
     /// Model is restricted to a tree for now, which means there exists one root link
     ///  typically, root link is the world(inertial).  Where world is a special link
     /// or is the root_link_ the link attached to the world by PLANAR/FLOATING joint
-    std::vector<std::shared_ptr<Link<T>>> root_link_;
+    std::vector<std::shared_ptr<Link<T>>> root_links_;
   };
   
 }; // namespace urdf
