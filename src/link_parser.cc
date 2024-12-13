@@ -36,88 +36,87 @@ namespace tinyurdf
       return true;
     }
 
-    template <typename T>
-    bool LinkParser<T>::parseGeometry(tinyxml2::XMLElement *xml )
+  template <typename T>
+  bool LinkParser<T>::parseGeometry(tinyxml2::XMLElement *xml, urdf::Geometry<T>& geometry)
+  {
+    if (xml == nullptr) 
     {
-      if(xml == nullptr ){
-
-        LOG_F(ERROR, "Link Parser: link (%s) visual geometry not found", link->name.c_str());
-        return false;
-      }else
+      LOG_F(ERROR, "Link Parser: link (%s) visual geometry not found", link->name.c_str());
+      return false;
+    } else 
+    {
+      const char* type_str = xml->Attribute("type");
+      if (type_str == nullptr) 
       {
-        const char* type_str = xml->Attribute("type");
-        if(type_str == nullptr ){
+        LOG_F(ERROR, "Link Parser: link (%s) has no geometry type.", link->name.c_str());
+        return false;
+      }
 
-          LOG_F(ERROR, "Link Parser : link (%s) has no geometry type.", link->name.c_str());
-          return false;
-        }else
-        {
-          if (type_str == "box" || type_str == "Box")
-          {
-            const char* size_str = xml->Attribute("size");
-            if(size_str==nullptr){
-
-              LOG_F(ERROR, "link parser :link (%s) geometry box has no size", link->name.c_str());
-              return false;
-            }else
-            {
-              std::istringstream stream(size_str);
-              str2vec<T>(stream, link->visual->geometry.dim);
-            }
-          }else if(type_str == "cylinder" || type_str == "Cylinder")
-          {
-            const char* length_str = xml->Attribute("length");
-            const char* radius_str = xml->Attribute("radius");
-            if(length_str == nullptr ||  radius_str == nullptr ){
-
-              LOG_F(ERROR, "link Parser : link (%s) has missing geometry vars", link->name.c_str());
-              return false;
-            }else
-            {
-              str2num<T>(length_str, link->visual->geometry.length);
-              str2num<T>(radius_str,  link->visual->geometry.radius);
-            }
-            
-          }else if (type_str == "sphere" || type_str == "Sphere")
-          {
-            const char* radius_str = xml->Attribute("radius");
-            if(radius_str == nullptr ){
-
-              LOG_F(ERROR, "Link parser : link (%s) has missing geometry vars", link->name.c_str());
-              return false;
-            }else
-            {
-              str2num<T>(radius_str, link->visual->geometry.radius);
-            }
-            
-          }else if(type_str == "mesh" || type_str == "Mesh")
-          {
-            const char* mesh_str = xml->Attribute("filename");
-            if(mesh_str==nullptr){
-
-              LOG_F(ERROR, "Link Parser : link (%s) missing mesh file", link->name.c_str());
-              return false;
-            }else
-            {
-              link->visual->geometry.texture_filename =std::string(mesh_str);
-            }
-            const char* scale_str =  xml->Attribute("scale");
-            if (scale_str==nullptr)
-            {
-               LOG_F(WARNING, "mesh scale in link (%s) not found, use default 1 1 1", link->name.c_str();)
-            }else
-            {
-              std::istringstream stream(scale_str);
-              str2vec<T>(stream, link->visual->geometry.scale);
-            }
-
-          }else{
-            LOG_F(ERROR, "Link Parser : link (%s) has unkown geometry", link->name.c_str());
+      if (std::strcmp(type_str, "box") == 0 || std::strcmp(type_str, "Box") == 0) 
+      {
+        urdf::Box<T> box;
+        const char* size_str = xml->Attribute("size");
+        if (size_str == nullptr) {
+            LOG_F(ERROR, "Link parser: link (%s) geometry box has no size", link->name.c_str());
             return false;
-          }
+        } else {
+            std::istringstream stream(size_str);
+            str2vec<T>(stream, box.dim);
         }
+        geometry = box; 
+
+      } else if (std::strcmp(type_str, "cylinder") == 0 || std::strcmp(type_str, "Cylinder") == 0) 
+      {
+        urdf::Cylinder<T> cylinder;
+        const char* length_str = xml->Attribute("length");
+        const char* radius_str = xml->Attribute("radius");
+        if (length_str == nullptr || radius_str == nullptr) {
+            LOG_F(ERROR, "Link Parser: link (%s) has missing geometry vars", link->name.c_str());
+            return false;
+        } else {
+            str2num<T>(length_str, cylinder.length);
+            str2num<T>(radius_str, cylinder.radius);
+        }
+        geometry = cylinder; 
+
+      } else if (std::strcmp(type_str, "sphere") == 0 || std::strcmp(type_str, "Sphere") == 0) 
+      {
+        urdf::Sphere<T> sphere;
+        const char* radius_str = xml->Attribute("radius");
+        if (radius_str == nullptr) {
+            LOG_F(ERROR, "Link Parser: link (%s) has missing geometry vars", link->name.c_str());
+            return false;
+        } else {
+            str2num<T>(radius_str, sphere.radius);
+        }
+        geometry = sphere; 
+
+      } else if (std::strcmp(type_str, "mesh") == 0 || std::strcmp(type_str, "Mesh") == 0)
+      {
+        urdf::Mesh<T> mesh;
+        const char* mesh_str = xml->Attribute("filename");
+        if (mesh_str == nullptr) {
+            LOG_F(ERROR, "Link Parser: link (%s) missing mesh file", link->name.c_str());
+            return false;
+        } else {
+          mesh.texture_filename = std::string(mesh_str);
+        }
+        const char* scale_str = xml->Attribute("scale");
+        if (scale_str == nullptr) {
+          LOG_F(WARNING, "Mesh scale in link (%s) not found, using default 1 1 1", link->name.c_str());
+        } else {
+          std::istringstream stream(scale_str);
+          str2vec<T>(stream, mesh.scale); 
+        }
+        geometry = mesh; 
+
+      }else {
+        LOG_F(ERROR, "Link Parser: link (%s) has unknown geometry type", link->name.c_str());
+        return false;
       }
     }
+    return true;
+  }
 
     template <typename T>
     bool LinkParser<T>::parseMaterial(tinyxml2::XMLElement *xml)
@@ -128,6 +127,11 @@ namespace tinyurdf
       }else
       {
         link->material = std::make_shared<urdf::Material<T>>();
+        link->visual->material = std::make_shared<urdf::Material<T>>();
+        
+        link->material->clear();
+        link->visual->material->clear();
+
         const char* name_str = xml->Attribute("name");
         if(name_str == nullptr){
 
@@ -136,6 +140,7 @@ namespace tinyurdf
         }else
         {
           link->material->name = std::string(name_str);
+          link->visual->material_name =  std::string(name_str);
         }
         tinyxml2::XMLElement* texture_filename_xml = xml->FirstChildElement("texture");
         const char* filename_str = texture_filename_xml->Attribute("filename");
@@ -145,6 +150,7 @@ namespace tinyurdf
         }else
         {
           link->material->texture_filename = std::string(filename_str);
+          link->visual->material->texture_filename = std::string(filename_str);
         }
         tinyxml2::XMLElement* color_xml = xml->FirstChildElement("color");
         if(color_xml==nullptr){
@@ -154,6 +160,7 @@ namespace tinyurdf
         {
           std::string color_string_vector = std::string(color_xml->Attribute("rgba"));
           link->material->color = urdf::Color<T>(color_string_vector);
+          link->visual->material->color = urdf::Color<T>(color_string_vector);
         }
         tinyxml2::XMLElement* density_xml = xml->FirstChildElement("density");
         if(density_xml==nullptr){
@@ -164,6 +171,7 @@ namespace tinyurdf
         {
           const char* density_str = density_xml->Attribute("value");
           str2num<T>(density_str, link->material->density);
+          str2num<T>(density_str, link->visual->material->density);
         }
         return true;
       }
@@ -180,7 +188,9 @@ namespace tinyurdf
       link->visual->clear();
 
       tinyxml2::XMLElement *geometry_xml = xml->FirstChildElement("geometry");
-      if(!parseGeometry(geometry_xml)){
+
+      link->visual->geometry = std::make_shared<urdf::Geometry<T>>();
+      if(!parseGeometry(geometry_xml,*link->visual->geometry)){
         return false;
       }else
       {
@@ -274,8 +284,13 @@ namespace tinyurdf
     template <typename T>
     bool LinkParser<T>::parseCollision(tinyxml2::XMLElement *xml)
     {
-      link->collision = std::shared_ptr<urdf::Collision<T>>();
+      if(xml == nullptr ){
+        LOG_F(ERROR, " Link Parser : link (%s) has no collision elment", link->name.c_str());
+        return false;
+      }
+      link->collision = std::make_shared<urdf::Collision<T>>();
       link->collision->clear();
+
       tinyxml2::XMLElement *origin_xml = xml->FirstChildElement("origin");
       if(origin_xml ==nullptr)
       {
@@ -286,7 +301,7 @@ namespace tinyurdf
         link->collision->origin = urdf::Pose<T>(origin_xml);
       }
       tinyxml2::XMLElement *geomtry_xml = xml->FirstChildElement("geometry");
-      if (!parseGeometry(geomtry_xml))
+      if (!parseGeometry(geomtry_xml, *link->visual->geometry))
       {
         return false;
       }
@@ -296,33 +311,35 @@ namespace tinyurdf
     template <typename T>
     bool LinkParser<T>::parse()
     {
-      if(!this->link) { 
-      LOG_F(ERROR, "Link Parser Point to non valid link class object");
-      return false;
-    }
-    else{
-      this->link->clear();
-    }
-    if (!parseName(config))
-    {
-      return false;
-    }
-    tinyxml2::XMLElement *xml_inertial = config->FirstChildElement("inertial");
-    if (!parseInertial(xml_inertial))
-    {
-      return false;
-    }
-    tinyxml2::XMLElement *xml_visual = config->FirstChildElement("visual");
-    if (!parseVisual(xml_visual))
-    {
-      return false;
-    }
-    tinyxml2::XMLElement *xml_collision = config->FirstChildElement("collision");
-    if(!parseCollision(xml_collision)){
-      return false;
-    }
-      return true;
-    }
+      if(this->link == nullptr) 
+      { 
+        LOG_F(ERROR, "Link Parser Point to non valid link class object");
+        return false;
+      }
+      else
+      {
+        this->link->clear();
+      }
+      if (!parseName(config))
+      {
+        return false;
+      } 
+      tinyxml2::XMLElement *xml_inertial = config->FirstChildElement("inertial");
+      if (!parseInertial(xml_inertial))
+      {
+        return false;
+      }
+      tinyxml2::XMLElement *xml_visual = config->FirstChildElement("visual");
+      if (!parseVisual(xml_visual))
+      {
+        return false;
+      }
+      tinyxml2::XMLElement *xml_collision = config->FirstChildElement("collision");
+      if(!parseCollision(xml_collision)){
+        return false;
+      }
+        return true;
+      }
 };// namespace tinyurdf 
 
 template class tinyurdf::LinkParser<double>;

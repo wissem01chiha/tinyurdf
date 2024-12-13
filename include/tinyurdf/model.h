@@ -20,16 +20,16 @@ namespace urdf {
     Model();
 
     /// \brief Load Model from TiXMLElement
+    /// \note  major change : as for extension for urdf description
+    /// we accept that the xml global elment
+    /// @code{.xml}
     Model(tinyxml2::XMLElement* xml);
 
-    /// \brief Load Model given a filename
-    Model(const std::string& filename);
-
     /// \brief return a shared pointer to the root link 
-    std::shared_ptr<const Link<T>>  getRoot(void) const{return this->root_link_;};
+    std::shared_ptr<Link<T>>  getRoot(void) const{return this->root_link_;};
 
     /// \brief  return a shared pointer to a given link by name 
-    std::shared_ptr<const Link<T>>  getLink(const std::string& name) const;
+    std::shared_ptr<Link<T>>  getLink(const std::string& name) const;
 
     /// \brief return a shared pointer to a given Joint by name 
     std::shared_ptr<const Joint<T>> getJoint(const std::string& name) const;

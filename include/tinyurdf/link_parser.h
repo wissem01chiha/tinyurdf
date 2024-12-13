@@ -41,8 +41,10 @@ namespace tinyurdf {
 
       /// @brief helper function for parsing geomtery
       /// xml elment of link 
-      /// @code{.xml} <geometry type = "cylinder" radius="1" length="0.5" /> @endcode
-      bool parseGeometry(tinyxml2::XMLElement *xml);
+      /// @code{.xml} 
+      ///   <geometry type = "cylinder" radius="1" length="0.5" /> 
+      /// @endcode
+      bool parseGeometry(tinyxml2::XMLElement *xml, urdf::Geometry<T>& geometry);
 
       /// @brief parse the link material, a link material elment is given by
       /// the tag:
@@ -56,6 +58,8 @@ namespace tinyurdf {
       /// ...
       /// @endcode
       /// @todo add support for checking if the texture filenme exsits or not.
+      /// this fuction fill out the material prop in Link class and in the visual calss
+      /// wich is also an attribute pointer of link ? bug ! redandancy of data !
       bool parseMaterial(tinyxml2::XMLElement* xml);
 
       /// @brief parse link visual element

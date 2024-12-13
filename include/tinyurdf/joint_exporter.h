@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <filesystem>
 #include <nlohmann/json.hpp>
 #include <loguru/loguru.hpp>
 #include <tinyxml2/tinyxml2.h>

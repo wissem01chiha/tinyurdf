@@ -1,6 +1,9 @@
 #ifndef URDF_PARSER_H
 #define URDF_PARSER_H
 
+#include <filesystem>
+#include <fstream>
+
 #include <loguru/loguru.hpp>
 #include <tinyxml2/tinyxml2.h>
 #include <args/args.hxx>
@@ -22,10 +25,9 @@ namespace tinyurdf {
       URDFParser();
 
       /// @brief init with a file path 
-      URDFParser(const std::string &path);
+      URDFParser(const std::string &path_);
 
       /// @brief main parsing function
-      /// log the time that we had to spend on parsing the file! 
       void parse();
 
       /// @brief get a pointer to the parsed model
@@ -37,11 +39,17 @@ namespace tinyurdf {
       void log(const std::string &path);
 
     private:
+      /// @brief parse the xml file version
+      /// if not found or the version is below a specif one, return an error 
+      /// stop the engine only XML 1.0 is supported !
+      bool parseVersion();
+
       std::shared_ptr<urdf::Model<T>> model = nullptr;
 
       std::shared_ptr<urdf::World<T>> world = nullptr;
 
+      tinyxml2::XMLDocument           doc;
+      urdf::URDFVersion               version;
   };
-
 }; // namespace tinyurdf
 #endif // URDF_PARSER_H

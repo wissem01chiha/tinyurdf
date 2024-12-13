@@ -35,8 +35,8 @@ namespace urdf
         this->inertial.reset();
         this->visual.reset();
         this->collision.reset();
-        this->parent_joint->clear();
-        this->child_joint->clear();
+        this->parent_joint.reset();
+        this->child_joint.reset();
         this->child_links.clear();
     }
 

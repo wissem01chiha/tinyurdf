@@ -73,6 +73,7 @@ if (BUILD_TESTS)
     set(TINYURDF_TEST_SOURCES
         test/color_test.cc
         test/pose_test.cc
+        test/model_test.cc
         test/joint_test.cc
         test/urdf_utilities_test.cc
         test/urdf_version_test.cc

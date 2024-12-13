@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <variant>
 #include <memory>
 #include <tinyxml2/tinyxml2.h>
 #include <loguru/loguru.hpp>
@@ -13,15 +14,8 @@
 
 namespace urdf {
 
-  class Geometry
-  {
-    public:
-      enum class Type { SPHERE, BOX, CYLINDER, MESH } type;
-      virtual ~Geometry() = default;  
-  };
-
   template<typename T = double >
-  class Sphere : public Geometry 
+  class Sphere 
   {
     public:
       T radius;
@@ -30,7 +24,7 @@ namespace urdf {
   };
 
   template<typename T = double >
-  class Box : public Geometry
+  class Box 
   {
     public:
       math::Vec3<T> dim;
@@ -40,7 +34,7 @@ namespace urdf {
   };
 
   template<typename T = double >
-  class Cylinder : public Geometry
+  class Cylinder 
   {
     public:
       T   length;
@@ -55,7 +49,7 @@ namespace urdf {
   };
 
   template<typename T = double >
-  class Mesh : public Geometry
+  class Mesh 
   {
     public:
       std::string    texture_filename;
@@ -70,6 +64,9 @@ namespace urdf {
           scale.setOnes();
       };
   };
+
+  template<typename T>
+  using Geometry = std::variant<Box<T>, Cylinder<T>, Sphere<T>, Mesh<T>>;
 
   template<typename T = double >
   class Material
@@ -183,10 +180,10 @@ namespace urdf {
   class Visual
   {
     public:
-      Pose<T>                      origin;
-      std::shared_ptr<Geometry>    geometry;
-      std::string                  material_name;
-      std::shared_ptr<Material<T>> material;
+      Pose<T>                         origin;
+      std::shared_ptr<Geometry<T>>    geometry;
+      std::string                     material_name;
+      std::shared_ptr<Material<T>>    material;
 
       Visual(){this->clear();};
       void clear(){
@@ -200,18 +197,16 @@ namespace urdf {
   template<typename T = double >
   class Collision
   {
-    std::shared_ptr<Geometry> geometry;
-    Pose<T>                   origin;
+    public:
+      std::shared_ptr<Geometry<T>> geometry;
+      Pose<T>                   origin;
 
-    Collision(){
-        geometry = std::make_shared<Geometry>();
-        origin   = Pose<T>();
-    };
-      
-    void clear(){
-        geometry.reset();
-        origin.clear();
-    };
+      Collision(){this->clear();};
+        
+      void clear(){
+          geometry.reset();
+          origin.clear();
+      };
   };
 
   /**

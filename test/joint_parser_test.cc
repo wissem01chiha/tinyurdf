@@ -4,7 +4,7 @@
 TEST(JointParserTest, ConstrutorTest){
 
     tinyxml2::XMLDocument doc;
-    tinyxml2::XMLError eResult = doc.LoadFile("../exemples/urdf/joint.urdf");
+    tinyxml2::XMLError eResult = doc.LoadFile("../exemples/.urdf/joint.urdf");
     if (eResult != tinyxml2::XML_SUCCESS) {
         std::cerr << "Error loading XML file: " << doc.ErrorStr() << std::endl;
     }
